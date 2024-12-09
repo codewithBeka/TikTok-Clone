@@ -1,0 +1,133 @@
+{% extends "layout.html" %}
+{% load static %}
+{% block  content %}
+    <div class="flex justify-between mx-auto w-full px-2 max-w-[1140px]">
+      <div class="w-full mt-[80px] mb-[40px] bg-white shadow-lg rounded-md py-6 md:px-10 px-4">
+        <div>
+          <h1 class="text-[23px] font-semibold">Upload video</h1>
+          <h2 class="text-gray-400 mt-1">Post a video to your account</h2>
+        </div>
+
+        <form method="post" action="" enctype="multipart/form-data" role="form" >
+          {% csrf_token %}
+        <div class="mt-8 md:flex gap-6">
+         
+
+          <!-- display upload video -->
+           
+
+        
+          <div  class="          
+                  md:mx-0
+                  mx-auto
+                  mt-4
+                  md:mb-12
+                  mb-16
+                  flex 
+                  items-center 
+                  justify-center 
+                  max-w-[260px] 
+                  h-[540px] 
+                  w-full 
+                  p-3 
+                  rounded-2xl
+                  cursor-pointer
+                  relative
+              ">
+              <img class="absolute  z-20 pointer-events-none" alt="mobile"  src="{% static "public/assets/images/mobile-case.png" %}" alt="">
+              <img class="absolute right-4 bottom-12 z-20" width="90"
+                src="{% static "public/assets/images/tiktok-logo-white.png" %}" />
+                <video     
+                autoPlay
+                loop
+                muted
+                className=" absolute rounded-xl object-cover z-10 p-[13px] w-full h-full" 
+                src="{{post.video.url}}" 
+                >
+                 </video>
+  
+      
+                <div
+                    class="absolute -bottom-12 flex items-center justify-between z-50 rounded-xl border w-full p-2 border-gray-300">
+                    <div class="flex items-center truncate">
+                    <AiOutlineCheckCircle size="16" class="min-w-[16px]" />
+                    <p class="text-[11px] pl-1 truncate text-ellipsis">{{post.caption}}</p>
+                    </div>
+                   <label htmlFor="file-input" id="upload-input">
+                      <span id="remove" class="text-[11px] ml-2 font-semibold">
+                      Change
+                      </span>
+                      {{form.video}}
+                    </label>
+                    
+       
+     
+        
+          
+            </div>
+             
+          </div>
+          
+
+
+          <!-- display upload video -->
+
+          <div class="mt-4 mb-6">
+            <div class="flex bg-[#F8F8F8] py-4 px-6">
+              <div>
+                <PiKnifeLight class="mr-4" size="20" />
+              </div>
+              <div>
+                <div class="text-semibold text-[15px] mb-1.5">
+                  Divide videos and edit
+                </div>
+                <div class="text-semibold text-[13px] text-gray-400">
+                  You can quickly divide videos into multiple parts, remove
+                  redundant parts and turn landscape videos into portrait
+                  videos
+                </div>
+              </div>
+              <div class="flex justify-end max-w-[130px] w-full h-full text-center my-auto">
+                <button class="px-8 py-1.5 text-white text-[15px] bg-[#F02C56] rounded-sm">
+                  Edit
+                </button>
+              </div>
+            </div>
+
+            <div class="mt-5">
+              <div class="flex items-center justify-between">
+                <div class="mb-1 text-[15px]">Caption</div>
+                <div class="text-gray-400 text-[12px]">20/150</div>
+              </div>
+              {{form.caption}}
+            </div>
+
+            <div class="mt-5">
+              <div class="flex items-center justify-between">
+                <div class="mb-1 text-[15px]">Tags (add tags, separeted by commas)</div>
+              </div>
+              {{form.tags}}
+            </div>
+
+            <div class="flex gap-3">
+              <a href="/">
+              <button type="button" class="px-10 py-2.5 mt-8 border text-[16px] hover:bg-gray-100 rounded-sm">
+                Discard
+              </button>
+            </a>
+              <button type="submit" class="px-10 py-2.5 mt-8 border text-[16px] text-white bg-[#F02C56] rounded-sm">
+                Update
+              </button>
+            </div>
+
+            <div class="text-red-600 mt-4">error.message</div>
+          </div>
+        </div>
+      </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="{% static "upload.js" %}"></script>
+
+  {% endblock  %}

@@ -1,0 +1,378 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="./output.css" rel="stylesheet">
+    <link rel="stylesheet" href="../public/assets/style.css">
+    <title>Tiktok</title>
+</head>
+
+<body>
+    <!-- navbar -->
+    <div id="TopNav" class="fixed bg-white z-30 flex items-center w-full border-b h-[60px]">
+        <div class="flex items-center justify-between gap-6 w-full px-4 mx-auto max-w-[1150px]">
+            <a href="">
+                <img class="logo min-w-[115px] w-[115px]" src="../public/assets/images/tiktok-logo.png" />
+            </a>
+
+            <div
+                class="relative hidden md:flex items-center justify-end bg-[#F1F1F2] p-1 rounded-full max-w-[430px] w-full">
+                <input type="text"
+                    class="w-full pl-3 my-2 bg-transparent placeholder-[#838383] text-[15px] focus:outline-none"
+                    placeholder="Search accounts" />
+
+                <!-- user search modal -->
+                <!-- <div class="absolute bg-white max-w-[910px] h-auto w-full z-20 left-0 top-16 border p-1">
+
+                    <div class="p-1">
+                        <a href=""
+                            class="flex items-center justify-between w-full cursor-pointer hover:bg-[#F12B56] p-1 px-2 hover:text-white">
+                            <div class="flex items-center">
+                                <img class="rounded-md" width="40"
+                                    src="../public/assets/images/placeholder-user.jpg" />
+                                <div class="truncate ml-4">bereket wale</div>
+                            </div>
+                        </a>
+                    </div>
+
+                </div> -->
+                <!-- end user search -->
+
+                <div class="px-3 py-1 flex items-center border-l border-l-gray-300">
+                    <img src="../public/assets/images/search.png" class=" w-[25px] h-[25px] mr-4" alt="">
+                </div>
+            </div>
+
+            <!-- navbuttons start -->
+            <div class="flex items-center gap-3 ">
+                <button class="flex items-center border rounded-sm py-[6px] hover:bg-gray-100 pl-1.5">
+                    <AiOutlinePlus color="#000000" size="22" />
+                    <span class="px-2 font-medium text-[15px]">Upload</span>
+                </button>
+                <div class="flex items-center">
+                    <button class="flex items-center bg-[#F02C56] text-white border rounded-md px-3 py-[6px]">
+                        <span class="whitespace-nowrap mx-4 font-medium text-[15px]">Log in</span>
+                    </button>
+                    <BsThreeDotsVertical color="#161724" size="25" />
+                </div>
+
+                <!-- loginuser -->
+                <div class="flex items-center">
+
+                    <div class="relative">
+
+                        <button class="mt-1 border border-gray-200 rounded-full" id="profile-show">
+                            <img class="rounded-full w-[35px] h-[35px]"
+                                src="../public/assets/images/placeholder-user.jpg" />
+                        </button>
+
+                        <!-- profile dropddown menu -->
+                        <div
+                            class="profile-down absolute bg-white rounded-lg py-1.5 w-[200px] shadow-xl border top-[40px] right-0 mt-2">
+                            <button
+                                class="flex items-center w-full justify-start py-3 px-2 hover:bg-gray-100 cursor-pointer">
+                                <BiUser size="20" />
+                                <span class="pl-2 font-semibold text-sm">Profile</span>
+                            </button>
+                            <button
+                                class="flex items-center justify-start w-full py-3 px-1.5 hover:bg-gray-100 border-t cursor-pointer">
+                                <FiLogOut size={20} />
+                                <span class="pl-2 font-semibold text-sm">Log out</span>
+                            </button>
+                        </div>
+                        <!-- profile dropddown menu -->
+
+
+                    </div>
+                </div>
+                <!-- loginuser -->
+            </div>
+            <!-- navbuttons start -->
+
+        </div>
+
+    </div>
+
+    <div class="flex justify-between mx-auto w-full lg:px-2.5 px-0 max-w-[1140px]">
+
+        <!-- sidebar -->
+        <div id="SideNavMain"
+            class="fixed z-20 bg-white pt-[70px] h-full lg:border-r-0 border-r w-[150px] overflow-auto hidden md:flex">
+
+
+            <div class="lg:w-full w-[55px]">
+                <div class="w-full flex items-center hover:bg-gray-100 p-2.5 rounded-md">
+                    <div class="flex items-center lg:mx-0 mx-auto">
+
+                        <img src="../public/assets/images/accueil.png" class="w-[25px] h-[25px] " alt="">
+
+                        <p class="lg:block hidden pl-[9px] mt-0.5 font-semibold text-[17px] text-[${colorString}]">
+                            <span class="text-[#F02C56]">For You</span>
+                        </p>
+                    </div>
+                </div>
+                <div class="w-full flex items-center hover:bg-gray-100 p-2.5 rounded-md">
+                    <div class="flex items-center lg:mx-0 mx-auto">
+
+                        <img src="../public/assets/images/add-friend.png" class="w-[25px] h-[25px]" alt="">
+
+                        <p class="lg:block hidden pl-[9px] mt-0.5 font-semibold text-[17px] text-[${colorString}]">
+                            <span>Following</span>
+                        </p>
+                    </div>
+                </div>
+                <div class="w-full flex items-center hover:bg-gray-100 p-2.5 rounded-md">
+                    <div class="flex items-center lg:mx-0 mx-auto">
+
+                        <img src="../public/assets/images/compass.png" class="w-[25px] h-[25px]" alt="">
+
+                        <p class="lg:block hidden pl-[9px] mt-0.5 font-semibold text-[17px] text-[${colorString}]">
+                            <span>Explore</span>
+                        </p>
+                    </div>
+                </div>
+                <div class="w-full flex items-center hover:bg-gray-100 p-2.5 rounded-md">
+                    <div class="flex items-center lg:mx-0 mx-auto">
+
+                        <img src="../public/assets/images/video_call.png" class="w-[25px] h-[25px]" alt="">
+
+                        <p class="lg:block hidden pl-[9px] mt-0.5 font-semibold text-[17px] text-[${colorString}]">
+                            <span>LIVE</span>
+                        </p>
+                    </div>
+                </div>
+                <div class="w-full flex items-center hover:bg-gray-100 p-2.5 rounded-md">
+                    <div class="flex items-center lg:mx-0 mx-auto">
+
+                        <img src="../public/assets/images/1.jpg" class="w-[25px] h-[25px] rounded-full" alt="">
+
+                        <p class="lg:block hidden pl-[9px] mt-0.5 font-semibold text-[17px] text-[${colorString}]">
+                            <span>Profile</span>
+                        </p>
+                    </div>
+                </div>
+
+
+
+                <div class="border-b lg:ml-2 mt-2"></div>
+                <h3 class="lg:block hidden text-xs text-gray-600 font-semibold pt-4 pb-2 px-2">Suggested accounts</h3>
+
+                <div class="lg:hidden block pt-3"></div>
+                <div class="cursor-pointer">
+                    <a href="" class="flex items-center hover:bg-gray-100 rounded-md w-full py-1.5 px-2">
+                        <img class="rounded-full lg:mx-0 mx-auto" width="35"
+                            src="../public/assets/images/placeholder-user.jpg" />
+                        <div class="lg:pl-2.5 lg:block hidden">
+                            <div class="flex items-center">
+                                <p class="font-bold text-[14px] truncate">
+                                    maki
+                                </p>
+                                <p class="ml-1 rounded-full bg-[#58D5EC] h-[14px] relative">
+                                    <img src="../public/assets/images/check.png" width="5px" height="5px" alt="">
+                                    <AiOutlineCheck class="relative p-[3px]" color="#FFFFFF" size="15" />
+                                </p>
+                            </div>
+
+                            <p class="font-light text-[12px] text-gray-600">
+                                maki
+                            </p>
+                        </div>
+                    </a>
+                </div>
+                <div class="cursor-pointer">
+                    <a href="" class="flex items-center hover:bg-gray-100 rounded-md w-full py-1.5 px-2">
+                        <img class="rounded-full lg:mx-0 mx-auto" width="35"
+                            src="../public/assets/images/placeholder-user.jpg" />
+                        <div class="lg:pl-2.5 lg:block hidden">
+                            <div class="flex items-center">
+                                <p class="font-bold text-[14px] truncate">
+                                    maki
+                                </p>
+                                <p class="ml-1 rounded-full bg-[#58D5EC] h-[14px] relative">
+                                    <img src="../public/assets/images/check.png" width="5px" height="5px" alt="">
+                                    <AiOutlineCheck class="relative p-[3px]" color="#FFFFFF" size="15" />
+                                </p>
+                            </div>
+
+                            <p class="font-light text-[12px] text-gray-600">
+                                maki
+                            </p>
+                        </div>
+                    </a>
+                </div>
+                <div class="cursor-pointer">
+                    <a href="" class="flex items-center hover:bg-gray-100 rounded-md w-full py-1.5 px-2">
+                        <img class="rounded-full lg:mx-0 mx-auto" width="35"
+                            src="../public/assets/images/placeholder-user.jpg" />
+                        <div class="lg:pl-2.5 lg:block hidden">
+                            <div class="flex items-center">
+                                <p class="font-bold text-[14px] truncate">
+                                    maki
+                                </p>
+                                <p class="ml-1 rounded-full bg-[#58D5EC] h-[14px] relative">
+                                    <img src="../public/assets/images/check.png" width="5px" height="5px" alt="">
+                                    <AiOutlineCheck class="relative p-[3px]" color="#FFFFFF" size="15" />
+                                </p>
+                            </div>
+
+                            <p class="font-light text-[12px] text-gray-600">
+                                maki
+                            </p>
+                        </div>
+                    </a>
+                </div>
+
+                <button class="lg:block hidden text-[#F02C56] pt-1.5 pl-2 text-[13px]">See all</button>
+
+                <div class="lg:block hidden border-b lg:ml-2 mt-2"></div>
+
+
+                <div class="lg:block hidden text-[11px] text-gray-500">
+                    <p class="pt-4 px-2">About Newsroom TikTok Shop Contact Careers ByteDance</p>
+                    <p class="pt-4 px-2">TikTok for Good Advertise Developers Transparency TikTok Rewards TikTok Browse
+                        TikTok Embeds</p>
+                    <p class="pt-4 px-2">Help Safety Terms Privacy Creator Portal Community Guidelines</p>
+                    <p class="pt-4 px-2">© 2023 TikTok</p>
+                </div>
+
+                <div class="pb-14"></div>
+            </div>
+        </div>
+
+        <!-- endsidebar -->
+        <div
+            class="pt-[90px] profile 2xl:pl-[185px] lg:pl-[160px] lg:pr-0 w-[calc(100%-90px)] pr-3 max-w-[1800px] 2xl:mx-auto">
+
+            <div class="">
+
+
+
+
+                <div class="my-8">
+                    <div  class="mt-4 grid 2xl:grid-cols-6 xl:grid-cols-3 lg:grid-cols-3 md:grid-cols-3 grid-cols-2 gap-3 relative">
+
+                        <div class="relative  brightness-90 hover:brightness-[1.1] cursor-pointer">
+
+
+
+
+                            <video muted loop class="aspect-[3/4] object-cover rounded-md"
+                                src="../public/assets/images/video1.mp4">
+
+                            </video>
+
+                            <div
+                                class="absolute left-[40px] bottom-[35px]  flex flex-col items-center justify-center p-3">
+                                <div>
+                                    <img src="../public/assets/images/team-4-800x800.jpg" width="60" height="60"
+                                        class="rounded-full" alt="">
+
+                                </div>
+                                <div>
+                                    <p class="text-[30px] text-white font-bold truncate ">bereket wale</p>
+                                    <p class="text-[18px] text-white truncate text-center">bereket</p>
+                                </div>
+                                <button
+                                    class="flex items-center text-[18px] justify-center border-none my-2 bg-[#F02C56] text-white border w-[180px]  rounded-md px-3 py-[6px]">
+                                    Follow
+                                </button>
+                            </div>
+                        </div>
+                        <div class="relative  brightness-90 hover:brightness-[1.1] cursor-pointer">
+
+
+
+
+                            <video muted loop class="aspect-[3/4] object-cover rounded-md"
+                                src="../public/assets/images/video2.mp4">
+
+                            </video>
+
+                            <div
+                                class="absolute left-[40px] bottom-[35px]  flex flex-col items-center justify-center p-3">
+                                <div>
+                                    <img src="../public/assets/images/team-4-800x800.jpg" width="60" height="60"
+                                        class="rounded-full" alt="">
+
+                                </div>
+                                <div>
+                                    <p class="text-[30px] text-white font-bold truncate ">Dave Gray</p>
+                                    <p class="text-[18px] text-white truncate text-center">@dave</p>
+                                </div>
+                                <button
+                                    class="flex items-center text-[18px] justify-center border-none my-2 bg-[#F02C56] text-white border  w-[180px]  rounded-md px-3 py-[6px]">
+                                    Follow
+                                </button>
+                            </div>
+                        </div>
+                        <div class="relative  brightness-90 hover:brightness-[1.1] cursor-pointer">
+
+
+
+
+                            <video muted loop class="aspect-[3/4] object-cover rounded-md"
+                                src="../public/assets/images/video3.mp4">
+
+                            </video>
+
+                            <div
+                                class="absolute left-[40px] bottom-[35px]  flex flex-col items-center justify-center p-3">
+                                <div>
+                                    <img src="../public/assets/images/team-4-800x800.jpg" width="60" height="60"
+                                        class="rounded-full" alt="">
+
+                                </div>
+                                <div>
+                                    <p class="text-[30px] text-white font-bold truncate ">Mekdes Wale</p>
+                                    <p class="text-[18px] text-white truncate text-center">Zenaenbel</p>
+                                </div>
+                                <button
+                                    class="flex items-center text-[18px] justify-center border-none my-2 bg-[#F02C56] text-white border  w-[180px]  rounded-md px-3 py-[6px]">
+                                    Follow
+                                </button>
+                            </div>
+                        </div>
+                        <div class="relative  brightness-90 hover:brightness-[1.1] cursor-pointer">
+
+
+
+
+                            <video muted loop class="aspect-[3/4] object-cover rounded-md"
+                                src="../public/assets/images/video4.mp4">
+
+                            </video>
+
+                            <div
+                                class="absolute left-[40px] bottom-[35px]  flex flex-col items-center justify-center p-3">
+                                <div>
+                                    <img src="../public/assets/images/team-4-800x800.jpg" width="60" height="60"
+                                        class="rounded-full" alt="">
+
+                                </div>
+                                <div>
+                                    <p class="text-[30px] text-white font-bold truncate ">Ethio Tiktok</p>
+                                    <p class="text-[18px] text-white truncate text-center">berti</p>
+                                </div>
+                                <button
+                                    class="flex items-center text-[18px] justify-center border-none my-2 bg-[#F02C56] text-white border  w-[180px]  rounded-md px-3 py-[6px]">
+                                    Follow
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    </div>
+
+</body>
+
+</html>

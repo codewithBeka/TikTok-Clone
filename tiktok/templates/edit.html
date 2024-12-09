@@ -1,0 +1,222 @@
+You're looking to update the `EditProfile` view function in your Django project to handle profile editing without relying on Django forms, instead using the input names directly. Here's how you can achieve that:
+
+```python
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from .models import Profile
+
+@login_required
+def EditProfile(request):
+    user = request.user.id
+    profile = Profile.objects.get(user__id=user)
+    BASE_WIDTH = 400
+
+    if request.method == 'POST':
+        # Get data from POST request using input names
+        picture = request.FILES.get('picture')
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        location = request.POST.get('location')
+        url = request.POST.get('url')
+        profile_info = request.POST.get('profile_info')
+
+        # Update profile attributes
+        if picture:
+            profile.picture = picture
+        if first_name:
+            profile.first_name = first_name
+        if last_name:
+            profile.last_name = last_name
+        if location:
+            profile.location = location
+        if url:
+            profile.url = url
+        if profile_info:
+            profile.profile_info = profile_info
+
+        # Save changes
+        profile.save()
+        return redirect('home')
+    else:
+        # No need for a form object here
+        pass
+
+    context = {
+        # Pass profile data to the template for display
+        'profile': profile,
+    }
+
+    return render(request, 'editprofile.html', context)
+```
+
+**Explanation of Changes:**
+
+1. **No Django Forms:** We've removed the `EditProfileForm` and its usage within the view.
+2. **Direct Access to POST Data:** We directly access the POST data using `request.POST.get('input_name')` and `request.FILES.get('picture')` to retrieve values for each input field.
+3. **Conditional Updates:** We use `if` statements to update profile attributes only if a value was provided in the POST request. This prevents overwriting existing values with empty strings.
+4. **Template Data:** The `context` dictionary now passes the `profile` object to the template, allowing you to display the current profile information in the edit form.
+
+**Template (editprofile.html):**
+
+You'll need to adjust your `editprofile.html` template to use the `profile` object directly and provide input fields with the correct names:
+
+```html
+<h1>Edit Profile</h1>
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="flex items-center justify-center sm:-mt-6">
+        <label htmlFor="image" class="relative cursor-pointer">
+            <img class="rounded-full" width="95" src="{{ profile.picture.url }}"/>
+            <button class="absolute bottom-0 right-0 rounded-full bg-white shadow-xl border p-1 border-gray-300 inline-block w-[32px] h-[32px]">
+                <BsPencil size="17" class="ml-0.5"/>
+            </button>
+        </label>
+        <input class="hidden" type="file" id="image" name="picture" accept="image/png, image/jpeg, image/jpg"/>
+    </div>
+
+    <input type="text" name="first_name" placeholder="First Name" value="{{ profile.first_name }}">
+    <input type="text" name="last_name" placeholder="Last Name" value="{{ profile.last_name }}">
+    <input type="text" name="location" placeholder="Location" value="{{ profile.location }}">
+    <input type="url" name="url" placeholder="URL" value="{{ profile.url }}">
+    <textarea name="profile_info" placeholder="Profile Info">{{ profile.profile_info }}</textarea>
+
+    <button type="submit">Save Changes</button>
+</form>
+```
+
+**Important Considerations:**
+
+- **Validation:** You are now responsible for handling any input validation on the server-side. Consider adding checks for valid data types, lengths, and formats.
+- **Security:** Always sanitize and validate user input to prevent security vulnerabilities like cross-site scripting (XSS) or SQL injection.
+- **Error Handling:** Implement error handling to display appropriate messages to the user if there are issues with the update process.
+
+By using this approach, you can update your profile without relying on Django forms, giving you more control over the data handling and presentation logic in your view.
+
+
+
+
+Sure, I can help you with that. Here's a new follow and unfollow system that can work on post details, home feeds, and profiles, along with the necessary views and URLs.
+
+**Models:**
+
+```python
+from django.contrib.auth.models import User
+from django.db import models
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    followers = models.ManyToManyField(User, related_name='following', blank=True)
+
+    def __str__(self):
+        return self.user.username
+```
+
+**Views:**
+
+```python
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+from .models import Profile
+
+@login_required
+def follow_user(request, username):
+    profile = get_object_or_404(Profile, user__username=username)
+    if request.user in profile.followers.all():
+        profile.followers.remove(request.user)
+    else:
+        profile.followers.add(request.user)
+    return redirect(request.META.get('HTTP_REFERER', 'home'))
+
+@login_required
+def profile_view(request, username):
+    profile = get_object_or_404(Profile, user__username=username)
+    is_following = request.user in profile.followers.all()
+    context = {
+        'profile': profile,
+        'is_following': is_following
+    }
+    return render(request, 'profile.html', context)
+
+@login_required
+def home_feed(request):
+    following = request.user.following.all()
+    posts = Post.objects.filter(user__in=following)
+    context = {
+        'posts': posts
+    }
+    return render(request, 'home.html', context)
+
+@login_required
+def post_detail(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    is_following = request.user in post.user.profile.followers.all()
+    context = {
+        'post': post,
+        'is_following': is_following
+    }
+    return render(request, 'post_detail.html', context)
+```
+
+**URLs:**
+
+```python
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('follow/<str:username>/', views.follow_user, name='follow_user'),
+    path('profile/<str:username>/', views.profile_view, name='profile_view'),
+    path('', views.home_feed, name='home_feed'),
+    path('post/<int:post_id>/', views.post_detail, name='post_detail'),
+]
+```
+
+**Template Examples:**
+
+**profile.html**:
+```html
+{% if user != profile.user %}
+    {% if is_following %}
+        <a href="{% url 'follow_user' profile.user.username %}">Unfollow</a>
+    {% else %}
+        <a href="{% url 'follow_user' profile.user.username %}">Follow</a>
+    {% endif %}
+{% endif %}
+```
+
+**home.html**:
+```html
+{% for post in posts %}
+    <div class="post-container">
+        <a href="{% url 'profile_view' post.user.username %}">{{ post.user.username }}</a>
+        <a href="{% url 'post_detail' post.id %}">{{ post.title }}</a>
+        {% if user != post.user %}
+            {% if is_following %}
+                <a href="{% url 'follow_user' post.user.username %}">Unfollow</a>
+            {% else %}
+                <a href="{% url 'follow_user' post.user.username %}">Follow</a>
+            {% endif %}
+        {% endif %}
+    </div>
+{% endfor %}
+```
+
+**post_detail.html**:
+```html
+<div class="post-detail">
+    <h2>{{ post.title }}</h2>
+    <p>{{ post.content }}</p>
+    <p>Posted by: <a href="{% url 'profile_view' post.user.username %}">{{ post.user.username }}</a></p>
+    {% if user != post.user %}
+        {% if is_following %}
+            <a href="{% url 'follow_user' post.user.username %}">Unfollow</a>
+        {% else %}
+            <a href="{% url 'follow_user' post.user.username %}">Follow</a>
+        {% endif %}
+    {% endif %}
+</div>
+```
+
+This new follow and unfollow system allows users to follow and unfollow other users from the post detail, home feed, and profile pages. The `follow_user` view handles the follow/unfollow logic, and the necessary context variables are passed to the templates to display the appropriate follow/unfollow buttons.
+
+Remember to update your models, views, and templates accordingly to fit your specific project requirements.

@@ -1,0 +1,303 @@
+To implement the functionality you described, you would need to create the following views, URLs, and templates:
+
+**Views:**
+
+1. `SearchView`:
+   - This view will handle the search functionality and display the search results.
+   - It will take the user's search input and query the database to find the most relevant users and their posts.
+   - It will then pass the search results to the template for rendering.
+
+2. `UserListView`:
+   - This view will display a list of all users related to the search input.
+   - It will query the database to find all users whose first name, last name, or username match the search input.
+   - It will then pass the user list to the template for rendering.
+
+3. `VideoListView`:
+   - This view will display a list of all videos related to the search input.
+   - It will query the database to find all posts (videos) where the user's first name, last name, or username match the search input.
+   - It will then pass the video list to the template for rendering.
+
+**URLs:**
+
+1. `search/`: This URL will map to the `SearchView` and handle the search functionality.
+2. `users/`: This URL will map to the `UserListView` and display the list of users related to the search input.
+3. `videos/`: This URL will map to the `VideoListView` and display the list of videos related to the search input.
+
+**Templates:**
+
+1. `search.html`:
+   - This template will display the search input field and the search results.
+   - It will include sections for the top 5 most relevant users and their videos, as well as a list of all users and all videos related to the search input.
+   - The template will use Jinja/Django templating syntax to render the data passed from the views.
+
+2. `user_list.html`:
+   - This template will display the list of users related to the search input.
+   - It will loop through the list of users and render their profile information (e.g., username, first name, last name, profile picture).
+
+3. `video_list.html`:
+   - This template will display the list of videos related to the search input.
+   - It will loop through the list of videos and render their information (e.g., video, caption, user, likes).
+
+Here's an example of how you could implement the `SearchView`:
+
+```python
+from django.db.models import Q
+from django.views.generic import TemplateView
+from .models import Profile, Post
+
+class SearchView(TemplateView):
+    template_name = 'search.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        query = self.request.GET.get('q')
+
+        # Find the top 5 most relevant users
+        relevant_users = Profile.objects.filter(
+            Q(first_name__icontains=query) |
+            Q(last_name__icontains=query) |
+            Q(user__username__icontains=query)
+        )[:5]
+
+        # Find all posts (videos) related to the search query
+        relevant_videos = Post.objects.filter(
+            Q(user__profile__first_name__icontains=query) |
+            Q(user__profile__last_name__icontains=query) |
+            Q(user__username__icontains=query)
+        )
+
+        context['relevant_users'] = relevant_users
+        context['relevant_videos'] = relevant_videos
+        return context
+```
+
+You can then create the corresponding URL patterns and templates to display the search results, user list, and video list.
+
+Remember to also create the `UserListView` and `VideoListView` views, their respective URL patterns, and the corresponding templates (`user_list.html` and `video_list.html`).
+
+
+
+
+Here's the updated code without using forms and directly using input names:
+
+```python
+@login_required
+def NewPost(request):
+    user = request.user
+    tags_objs = []
+
+    if request.method == 'POST':
+        video = request.POST.get('video')
+        caption = request.POST.get('caption')
+        tags_form = request.POST.get('tags')
+
+        tags_list = list(tags_form.split(','))
+
+        for tag in tags_list:
+            t, created = Tag.objects.get_or_create(title=tag)
+            tags_objs.append(t)
+
+        # Create the Post object only once
+        p, created = Post.objects.get_or_create(video=video, caption=caption, user=user)
+        p.tags.set(tags_objs)
+        p.save()
+        return redirect('home')
+
+    context = {
+        "tags": tags
+    }
+
+    return render(request, 'upload.html', context)
+```
+
+Here are the changes made:
+
+1. Removed the `NewPostForm` form and its usage.
+2. Instead of using `form.cleaned_data.get()`, we directly use `request.POST.get()` to retrieve the values of `video`, `caption`, and `tags`.
+3. The rest of the logic remains the same, where we split the `tags_form` string, create or retrieve the `Tag` objects, and then create or update the `Post` object.
+4. The `context` dictionary now only contains the `tags` variable, as the `form` variable is no longer needed.
+
+This approach assumes that you have the necessary input fields in your `upload.html` template, with the names `video`, `caption`, and `tags`. The template should look something like this:
+
+```html
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="file" name="video" required>
+    <textarea name="caption" required></textarea>
+    <input type="text" name="tags" placeholder="Enter tags separated by commas" required>
+    <button type="submit">Upload</button>
+</form>
+```
+
+This way, the view directly handles the input values from the request, without relying on a form object.
+
+
+
+To add the functionality to search for users and display their posts, you can follow these steps:
+
+1. **Add a search function to your views.py file:**
+
+```python
+from django.db.models import Q
+from .models import Profile, Post
+
+def search_users(request):
+    query = request.GET.get('query')
+    if query:
+        profiles = Profile.objects.filter(
+            Q(user__username__icontains=query) |
+            Q(first_name__icontains=query) |
+            Q(last_name__icontains=query)
+        )
+        posts = Post.objects.filter(user__profile__in=profiles).order_by('-posted')
+    else:
+        profiles = None
+        posts = None
+    context = {
+        'profiles': profiles,
+        'posts': posts
+    }
+    return render(request, 'search_users.html', context)
+```
+
+This function takes a search `query` from the URL parameter, and then filters the `Profile` and `Post` models to find matches. The `profiles` variable contains the matching user profiles, and the `posts` variable contains the posts of those users, ordered by the posting date.
+
+2. **Create a new template file called `search_users.html` and add the following code:**
+
+```html
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Search Users</h1>
+  <form method="GET" action="{% url 'search_users' %}">
+    <input type="text" name="query" placeholder="Search users">
+    <button type="submit">Search</button>
+  </form>
+
+  {% if profiles %}
+    <h2>Search Results</h2>
+    {% for profile in profiles %}
+      <div>
+        <a href="{% url 'profile' profile.user.username %}">
+          <img src="{{ profile.picture.url }}" alt="{{ profile.user.username }}'s profile picture">
+          <h3>{{ profile.user.username }}</h3>
+          <p>{{ profile.first_name }} {{ profile.last_name }}</p>
+        </a>
+        {% for post in posts %}
+          {% if post.user == profile.user %}
+            <div>
+              <a href="{% url 'postdetails' post.id %}">
+                <video src="{{ post.video.url }}" controls></video>
+                <p>{{ post.caption }}</p>
+              </a>
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% endfor %}
+  {% else %}
+    <p>No users found.</p>
+  {% endif %}
+{% endblock %}
+```
+
+This template displays a search form and, if any users are found, it lists the matching user profiles along with their posts.
+
+3. **Add the URL pattern for the search function in your `urls.py` file:**
+
+```python
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    # other URL patterns
+    path('search/', views.search_users, name='search_users'),
+]
+```
+
+Now, when a user visits the `/search/` URL and enters a search query, the `search_users` function in your views.py file will be called, and the results will be displayed in the `search_users.html` template.
+
+
+
+To implement the additional feature you requested, you can modify the `search_users.html` template as follows:
+
+```html
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Search Users</h1>
+  <form method="GET" action="{% url 'search_users' %}">
+    <input type="text" name="query" placeholder="Search users">
+    <button type="submit">Search</button>
+  </form>
+
+  <ul class="w-full flex items-center pt-4 border-b">
+    <li class="w-60 text-center py-2 text-[17px] font-semibold border-b-2 border-b-black">Top</li>
+    <li class="w-60 text-gray-500 text-center py-2 text-[17px] font-semibold">Users</li>
+    <li class="w-60 text-gray-500 text-center py-2 text-[17px] font-semibold">Videos</li>
+    <li class="w-60 text-gray-500 text-center py-2 text-[17px] font-semibold">Live</li>
+  </ul>
+
+  {% if profiles %}
+    <h2>Top Users</h2>
+    <div class="grid grid-cols-5 gap-4">
+      {% for profile in profiles|slice:":5" %}
+        <div>
+          <a href="{% url 'profile' profile.user.username %}">
+            <img src="{{ profile.picture.url }}" alt="{{ profile.user.username }}'s profile picture">
+            <h3>{{ profile.user.username }}</h3>
+            <p>{{ profile.first_name }} {{ profile.last_name }}</p>
+          </a>
+          {% for post in posts %}
+            {% if post.user == profile.user %}
+              <div>
+                <a href="{% url 'postdetails' post.id %}">
+                  <video src="{{ post.video.url }}" controls></video>
+                  <p>{{ post.caption }}</p>
+                </a>
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      {% endfor %}
+    </div>
+
+    <h2>Users</h2>
+    <div>
+      {% for profile in profiles %}
+        <div>
+          <a href="{% url 'profile' profile.user.username %}">
+            <img src="{{ profile.picture.url }}" alt="{{ profile.user.username }}'s profile picture">
+            <h3>{{ profile.user.username }}</h3>
+            <p>{{ profile.first_name }} {{ profile.last_name }}</p>
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+
+    <h2>Videos</h2>
+    <div>
+      {% for post in posts %}
+        <div>
+          <a href="{% url 'postdetails' post.id %}">
+            <video src="{{ post.video.url }}" controls></video>
+            <p>{{ post.caption }}</p>
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+
+  {% else %}
+    <p>No users found.</p>
+  {% endif %}
+{% endblock %}
+```
+
+Here's what the changes do:
+
+1. Added the HTML structure for the category tabs at the top of the page.
+2. In the "Top Users" section, we're now displaying the first 5 matching profiles, along with their corresponding posts.
+3. In the "Users" section, we're displaying all the matching profiles.
+4. In the "Videos" section, we're displaying all the posts from the matching users.
+
+This should provide the functionality you requested, where the top 5 most relevant users and their posts are displayed at the top, followed by a list of all matching users, and finally a list of all posts from the matching users.

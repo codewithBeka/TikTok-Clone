@@ -1,0 +1,283 @@
+{% load static %}
+{% load humanize %} 
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="{% static 'public/assets/output.css' %}" rel="stylesheet" />
+    <link rel="stylesheet" href="{% static 'public/assets/style.css' %}" />
+    <link
+      rel="shortcut icon"
+      href="{% static 'public/assets/images/tiktok-logo-small.png' %}"
+      type="image/x-icon"
+    />
+    <title>TikTok</title>
+  </head>
+
+  <body>
+
+
+    <div id="PostPage" class="lg:flex justify-between w-full h-screen bg-black overflow-auto">
+        <div class="lg:w-[calc(100%-540px)] h-full relative">
+            <a href="/" class="absolute text-white z-20 m-5 rounded-full bg-gray-700 p-1.5 hover:bg-gray-800">
+                <img src="{% static "public/assets/images/close.png" %}"  class="ml-0.5" width="17" height="17"/>
+            </a>
+
+            <div>
+                <button
+                    class="absolute z-20 right-4 top-4 flex items-center justify-center rounded-full bg-gray-700 p-1.5 hover:bg-gray-800">
+                    <img src="{% static "public/assets/images/up.png" %}"  class="ml-0.5" width="17" height="17"/>
+                </button>
+
+                <button
+                    class="absolute z-20 right-4 top-20 flex items-center justify-center rounded-full bg-gray-700 p-1.5 hover:bg-gray-800">
+                    <img src="{% static "public/assets/images/down.png" %}"  class="ml-0.5" width="17" height="17"/>
+                </button>
+            </div>
+
+            <img class="absolute z-20 top-[18px] left-[70px] rounded-full lg:mx-0 mx-auto" width="45"
+                src="{% static "public/assets/images/tiktok-logo-small.png" %}" />
+
+
+            <video class="fixed object-cover w-full my-auto z-[0] h-screen  ">
+                <source class=" w-full h-full" src="{{post.video.url}}" type="video/mp4">
+            </video>
+
+
+            <div class="bg-black bg-opacity-70 lg:min-w-[480px] z-10 relative">
+
+                <video autoPlay controls loop  class="h-screen mx-auto backdrop-blur-sm">
+                       <source class=" w-full h-full"  src="{{post.video.url}}" type="video/mp4">
+                </video>
+            </div>
+
+
+        </div>
+
+        <div id="InfoSection" class="lg:max-w-[550px] relative w-full h-full bg-white">
+            <div class="py-7" />
+            <div class="flex items-center justify-between px-8 ">
+                <div class="flex items-center">
+                  
+                        <a href="{% url "profile" post.user.username %}"> 
+                            {% if post.user.profile.picture %}
+                            <img
+                            class="rounded-full lg:mx-0 mx-auto" width="40"
+                            src="{{post.user.profile.picture.url}}"
+                          /> 
+                          {% else %}
+                            <img
+                            class="rounded-full lg:mx-0 mx-auto" width="40"
+                            src="{% static 'public/assets/images/placeholder-user.jpg' %}"
+                          />
+                          {% endif %}
+                    </a>
+
+                    <div class="ml-3 pt-0.5">
+
+                        <a href="" class="relative z-10 text-[17px] font-semibold hover:underline">
+                           {{post.user.username}}
+                        </a>
+
+                        <div class="relative z-0 text-[13px] -mt-5 font-light">
+                          {% if post.user.profile.first_name %}  {{post.user.profile.first_name|title}} {{post.user.profile.last_name|title}} {% endif %}
+                            <span class="relative -top-[2px] text-[30px] pl-1 pr-0.5 ">.</span>
+                            <span class="font-medium">{{ post.posted |naturaltime }}</span>
+                        </div>
+                    </div>
+                </div>
+
+            {% if user.is_authenticated and user == post.user %}
+                <a href="{% url 'edit-profile' %}" class="button">
+                <button 
+                    class="flex item-center rounded-md py-1.5 px-3.5 mt-3 text-[15px] font-semibold border hover:bg-gray-100"
+                >
+                    <BsPencil class="mt-0.5 mr-1" size="18"/>
+                    <span>Edit profile</span>
+                </button>
+            </a>
+            
+            {% else %}
+            <button class="flex items-center bg-[#F02C56] text-white border rounded-md px-3 py-[6px]">
+                <span class="whitespace-nowrap mx-4 font-medium text-[15px]">Follow</span>
+            </button>
+            {% endif %}
+            
+
+            </div>
+
+            <p class="px-8 mt-4 text-[19px] font-bold capitalize">{{post.caption}}</p>
+
+            <p class="flex item-center gap-2 px-8 mt-4 text-sm font-bold">
+                <ImMusic size="17" />
+                original sound - {{post.user.username}}
+            </p>
+          
+            <div class="flex items-center px-8 mt-8 gap-2">
+                <div class="pb-4 text-center flex items-center">
+                    <button class="rounded-full bg-gray-200 p-2 cursor-pointer">
+                        <a href="{% url 'postlike' post.id %}">
+                        {% if post.is_liked %}
+                        <img
+                        src="{% static 'public/assets/images/heart.png' %}"
+                        width="20" height="20"
+                        alt=""
+                        /> 
+                        {% else  %}
+                        <img
+                        src="{% static 'public/assets/images/heart-black.png' %}"
+                          width="20" height="20"
+                        alt=""
+                        />               
+                        {% endif %}
+                        </a>
+                    </button>
+                    <span class="text-[12px] md:text-[17px] pl-2 pr-4 font-bold text-gray-800 ">
+                        {% if post.likes == 0 %}
+                        no likes
+                       {% elif post.likes == 1 %}
+                             {{post.likes}} like
+                       {% else %}
+                       {{ post.likes }} likes                                
+                       {% endif %}
+                    </span>
+                </div>
+
+                <div class="pb-4 text-center flex items-center">
+                    <div class="rounded-full bg-gray-200 p-2 cursor-pointer">
+                        <img src="{% static "public/assets/images/chat.png" %}" alt="" width="20" height="20">
+                    </div>
+                    <span class="text-[15px] md:text-[17px] pl-2 pr-4 font-bold text-gray-800 ">
+                        {% if post.comments.count == 0 %}
+                        no comments
+                       {% elif post.comments.count == 1 %}
+                             {{post.comments.count}} comment
+                       {% else %}
+                       {{ post.comments.count }} comments                                
+                       {% endif %}
+                    </span>
+                </div>
+                <div class="pb-4 text-center flex items-center">
+                    <div class="rounded-full bg-gray-200 p-2 cursor-pointer">
+                        {% if favorited is True %}
+                            <a href="{% url 'postfavorite' post.id %}">
+                            <img src="{% static "public/assets/images/save.png" %}" alt="" width="20" height="20">
+                            </a>
+                        {% else %}
+                        <a href="{% url 'postfavorite' post.id %}">
+                            <img src="{% static "public/assets/images/save-black.png" %}" alt="" width="20" height="20">
+                        </a>
+                        {% endif %}
+                    </div>
+                    <span class="text-[15px] md:text-[17px] pl-2 pr-4 font-bold text-gray-800 ">
+                        678.9 K </span>
+                </div>
+            </div>
+  
+           
+
+        </div>
+
+
+
+        <div id="Comments" class="relative bg-[#F8F8F8] z-0 w-full h-[calc(100%-273px)]  overflow-auto">
+            <p class="flex  text-[#F02C56] item-center gap-2 px-8 mt-4 text-sm font-bold">
+                {% for tag in post.tags.all %}<a href="{{ tag.get_absolute_url }}"
+                >#{{ tag }}</a
+              >{% endfor %}
+            </p>
+            <ul class=" w-full flex items-center pt-1 border-b ">
+                <li class="w-60 text-center py-2 text-[15px] font-semibold border-b-2 border-b-black">Comments ({{ post.comments.count }})
+                </li>
+                <li class="w-60 text-gray-500 text-center py-2 text-[15px] font-semibold">Creator Videos</li>
+            </ul>
+            <div class="pt-2"></div>
+
+
+            <div>
+                <div id="SingleComment" class="flex items-center justify-between flex-col gap-[12px] px-8 mt-4">
+                    {% for comment in comments %}
+                    <div class="flex  items-center relative  w-full">
+                        <a href="{% url "profile" post.user.username %}">
+                            {% if comment.user.profile.picture %}
+                            <img
+                                 class="absolute top-0 rounded-full lg:mx-0 mx-auto" width="40"
+                            src="{{comment.user.profile.picture.url}}"
+                          /> 
+                          {% else %}
+                            <img
+                                 class="absolute top-0 rounded-full lg:mx-0 mx-auto" width="40"
+                            src="{% static 'public/assets/images/placeholder-user.jpg' %}"
+                          />
+                          {% endif %}
+                            
+                        </a>
+
+                        <div class="ml-14 pt-0.5 w-full">
+
+                            <div class="text-[18px] font-semibold flex items-center justify-between">
+                                <span class="flex items-center">
+                                    {{comment.user.username}}
+                                    <span class="text-[12px] text-gray-600 font-light ml-1">
+                                        {{ comment.date|naturaltime }}
+                                    </span>
+                                </span>
+
+
+                            </div>
+
+                            <p class="text-[15px] font-light">{{ comment.body }}.</p>
+
+
+                        </div>
+
+
+                        <div>
+                            <img src="{% static "public/assets/images/love.png" %}" width="15" height="15" alt="">
+                            <span>75</span>
+                        </div>
+
+                    
+
+
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+
+            <div class="mb-28"></div>
+
+        </div>
+        
+        <form method="post" action="" role="form">
+            {% csrf_token %}
+        <div id="CreateComment"
+            class="absolute flex items-center justify-between bottom-0 bg-white h-[85px] lg:max-w-[550px] w-full py-5 px-8 border-t-2">
+            {% if user.is_authenticated %}
+        
+            <div class="
+                        bg-[#F1F1F2] flex items-center rounded-lg w-full lg:max-w-[420px]">
+                {{form.body}}
+            </div>
+         
+            <button type="submit" class="
+                            font-semibold text-sm ml-5 pr-1
+                            'text-[#F02C56] cursor-pointer
+                        ">
+                Post
+            </button>
+        </form>
+            {% else %}
+            <span class="text-[15px] md:text-[17px] pl-2 pr-4 font-bold text-gray-800 ">
+                Login To Comment </span>
+            {% endif %}
+        </div>
+    </div>
+
+    
+    <script src="{% static 'script.js'%}"></script>
+  </body>
+</html>

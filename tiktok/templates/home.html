@@ -1,0 +1,377 @@
+{% extends "layout.html" %}
+{% load static %}
+{% block  content%}
+ <!-- sidebar -->
+ <div
+ id="SideNavMain"
+ class="fixed z-20 bg-white pt-[70px] h-full lg:border-r-0 border-r w-[150px] overflow-auto hidden md:flex"
+>
+ <div class="lg:w-full w-[55px]">
+   <div
+     class="w-full flex items-center hover:bg-gray-100 p-2.5 rounded-md"
+   >
+     <div class="flex items-center lg:mx-0 mx-auto">
+       <img
+         src="{% static 'public/assets/images/accueil.png' %}"
+         class="w-[25px] h-[25px]"
+         alt=""
+       />
+
+       <p
+         class="lg:block hidden pl-[9px] mt-0.5 font-semibold text-[17px] text-[${colorString}]"
+       >
+       <a href="/">
+         <span class="text-[#F02C56]">For You</span>
+       </a>
+       </p>
+     </div>
+   </div>
+   <div
+     class="w-full flex items-center hover:bg-gray-100 p-2.5 rounded-md"
+   >
+     <div class="flex items-center lg:mx-0 mx-auto">
+       <img
+         src="{% static 'public/assets/images/add-friend.png' %}"
+         class="w-[25px] h-[25px]"
+         alt=""
+       />
+
+       <p
+         class="lg:block hidden pl-[9px] mt-0.5 font-semibold text-[17px] text-[${colorString}]"
+       >
+         <span>Following</span>
+       </p>
+     </div>
+   </div>
+   <div
+     class="w-full flex items-center hover:bg-gray-100 p-2.5 rounded-md"
+   >
+     <div class="flex items-center lg:mx-0 mx-auto">
+       <img
+         src="{% static 'public/assets/images/compass.png' %}"
+         class="w-[25px] h-[25px]"
+         alt=""
+       />
+
+       <p
+         class="lg:block hidden pl-[9px] mt-0.5 font-semibold text-[17px] text-[${colorString}]"
+       >
+         <span>Explore</span>
+       </p>
+     </div>
+   </div>
+   <div
+     class="w-full flex items-center hover:bg-gray-100 p-2.5 rounded-md"
+   >
+     <div class="flex items-center lg:mx-0 mx-auto">
+       <img
+         src="{% static 'public/assets/images/video_call.png' %}"
+         class="w-[25px] h-[25px]"
+         alt=""
+       />
+
+       <p
+         class="lg:block hidden pl-[9px] mt-0.5 font-semibold text-[17px] text-[${colorString}]"
+       >
+         <span>LIVE</span>
+       </p>
+     </div>
+   </div>
+   <div
+     class="w-full flex items-center hover:bg-gray-100 p-2.5 rounded-md"
+   >
+     <div class="flex items-center lg:mx-0 mx-auto">
+      {% if user.is_authenticated %}
+ 
+      <a href="{% url 'profile' request.user %}" >
+       {% if user.profile.picture %}
+       <img
+             class="w-[25px] h-[25px] rounded-full"
+             src="{{user.profile.picture.url }}"
+       /> 
+       {% else %}
+         <img
+             class="w-[25px] h-[25px] rounded-full"
+             src="{% static 'public/assets/images/placeholder-user.jpg' %}"
+       />
+       {% endif %}
+      </a>
+       <p
+         class="lg:block hidden pl-[9px] mt-0.5 font-semibold text-[17px] text-[${colorString}]"
+       >
+         <span>Profile</span>
+       </p>
+       {% endif %}
+     </div>
+   </div>
+
+   <div class="border-b lg:ml-2 mt-2"></div>
+   <h3
+     class="lg:block hidden text-xs text-gray-600 font-semibold pt-4 pb-2 px-2"
+   >
+     Suggested accounts
+   </h3>
+
+   <div class="lg:hidden block pt-3"></div>
+   {% if user.is_authenticated %}
+   {% for user in all_users %}
+   {% if request.user.username != user.username %}
+   <div class="cursor-pointer">
+     <a
+       href="{% url 'profile' user %}"
+       class="flex items-center hover:bg-gray-100 rounded-md w-full py-1.5 px-2"
+     >
+     {% if user.profile.picture %}
+       <img
+         class="rounded-full lg:mx-0 mx-auto"
+         width="35"
+         src="{{user.profile.picture.url }}"
+       />
+       {% else %}
+       <img
+       class="rounded-full lg:mx-0 mx-auto"
+       width="35"
+       src="{% static 'public/assets/images/placeholder-user.jpg' %}"
+     />
+       {% endif %}
+       <div class="lg:pl-2.5 lg:block hidden">
+         <div class="flex items-center">
+           <p class="font-bold text-[14px] truncate">{{user.username}}</p>
+           <p class="ml-1 rounded-full bg-[#58D5EC] h-[14px] relative">
+             <img
+               src="{% static 'public/assets/images/check.png' %}"
+               width="15px"
+               height="15px"
+               alt=""
+             />
+             <AiOutlineCheck
+               class="relative p-[3px]"
+               color="#FFFFFF"
+               size="15"
+             />
+           </p>
+         </div>
+
+         <p class="font-light text-[12px] text-gray-600">{{user.username}}</p>
+       </div>
+     </a>
+   </div>
+  
+   {% endif %}
+   {% endfor %}
+   <button
+   class="lg:block hidden text-[#F02C56] pt-1.5 pl-2 text-[13px]"
+ >
+   See all
+ </button>
+   {% else %}
+
+
+   <a href="{% url "login" %}">
+   <button
+   class="lg:block hidden text-[#F02C56] pt-1.5 pl-2 text-[13px]"
+ >
+   LOGIN
+ </button>
+</a>
+   {% endif %}
+
+
+  
+
+   <div class="lg:block hidden border-b lg:ml-2 mt-2"></div>
+
+   <div class="lg:block hidden text-[11px] text-gray-500">
+     <p class="pt-4 px-2">
+       About Newsroom TikTok Shop Contact Careers ByteDance
+     </p>
+     <p class="pt-4 px-2">
+       TikTok for Good Advertise Developers Transparency TikTok Rewards
+       TikTok Browse TikTok Embeds
+     </p>
+     <p class="pt-4 px-2">
+       Help Safety Terms Privacy Creator Portal Community Guidelines
+     </p>
+     <p class="pt-4 px-2">© 2023 TikTok</p>
+   </div>
+
+   <div class="pb-14"></div>
+ </div>
+</div>
+
+<!-- endsidebar -->
+<div class="mt-[80px] w-[calc(100%-90px)] max-w-[690px] ml-auto">
+  {% if posts %}
+
+  {% for post in posts %}
+
+  <div id="" class="flex flex-col border-b py-6">
+    <div class="cursor-pointer">
+     <a href="{% url "profile" post.user.username %}"> 
+      {% if post.user.profile.picture %}
+      <img
+      class="rounded-full w-[35px] h-[35px]"
+      src="{{post.user.profile.picture.url}}"
+    /> 
+    {% else %}
+      <img
+      class="rounded-full w-[35px] h-[35px]"
+      src="{% static 'public/assets/images/placeholder-user.jpg' %}"
+    />
+    {% endif %}</a>
+    </div>
+ 
+    <!-- vidio contaner -->
+    
+    <div class="pl-3 w-full px-4">
+      <div class="flex items-center justify-between pb-0.5">
+        <a href="{% url "profile" post.user.username%}">
+          <span class="font-bold hover:underline cursor-pointer">
+            {{post.user.username}}
+          </span>
+        </a>
+ 
+        {% if request.user  == post.user%}
+        <a href="{% url "update_post" post.id %}">
+        <button
+        class="border text-[15px] px-[21px] py-0.5 border-[#F02C56] text-[#000000] hover:bg-[#ffeef2] font-semibold rounded-md"
+      >
+        EditPost
+      </button>
+    </a>
+      {% else %}
+      {% if user.is_authenticated and user != post.user %}
+      {% if follow_status == True %}
+      <a href="{% url 'follow' profile.user 0 %}">
+        <button class="border text-[15px] px-[21px] py-0.5 border-[#F02C56] text-[#F02C56] hover:bg-[#ffeef2] font-semibold rounded-md">
+          UnFollow
+        </button>
+      </a>
+    {% else %}
+      <a href="{% url 'follow' user 1 %}">
+        <button class="border text-[15px] px-[21px] py-0.5 border-[#F02C56] text-[#F02C56] hover:bg-[#ffeef2] font-semibold rounded-md">
+          Follow
+        </button>
+      </a>
+    {% endif %}
+    {% endif %}
+
+    {% endif %}
+   
+      </div>
+      <p
+        class="text-[15px] pb-0.5 break-words md:max-w-[400px] max-w-[300px]"
+      >
+      {{ post.caption }}
+    </p>
+      <p class="text-[14px] text-[#F12B56] pb-0.5">
+        {% for tag in post.tags.all %}<a href="{{ tag.get_absolute_url }}"
+        >#{{ tag }}</a>
+      {% endfor %}
+      </p>
+      <p class="text-[14px] pb-0.5 flex items-center font-semibold">
+        <ImMusic size="17" />
+        <span class="px-1">original sound - {{post.user.username}}</span>
+        <AiFillHeart size="20" />
+      </p>
+ 
+      <div class="mt-2.5 flex">
+        <div
+          class="relative min-h-[480px] max-h-[580px] max-w-[260px] flex items-center bg-black rounded-xl cursor-pointer"
+        >
+          <video
+          id="video-item"
+          loop
+          controls
+          class="rounded-xl object-cover mx-auto h-full">
+            <source 
+            src="{{post.video.url}}" type="video/mp4"/>
+          </video>
+
+          <img
+            class="absolute right-2 bottom-10"
+            width="90"
+            src="{% static 'public/assets/images/tiktok-logo-white.png' %}"
+          />
+        </div>
+        <div class="relative mr-[75px]">
+          <div class="absolute bottom-0 pl-2">
+            <div class="pb-4 text-center">
+              <button class="rounded-full bg-gray-200 p-2 cursor-pointer">
+                <a href="homeLikes?post_id={{post.id}}">
+                  {% if post.is_liked %}
+                  <img
+                  src="{% static 'public/assets/images/heart.png' %}"
+                  width="25"
+                  alt=""
+                /> 
+                {% else  %}
+                  <img
+                  src="{% static 'public/assets/images/heart-black.png' %}"
+                  width="25"
+                  alt=""
+                />               
+               {% endif %}
+              </a>
+              
+              </button>
+              <span class="text-xs text-gray-800 font-semibold">
+                {% if post.likes == 0 %}
+                no likes
+               {% elif post.likes == 1 %}
+                     {{post.likes}} like
+               {% else %}
+               {{ post.likes }} likes                                
+               {% endif %}
+              </span>
+            </div>
+ 
+            <a href="{% url "postdetails" post.id%}" >
+            <button class="pb-4 text-center w-[41px] h-[40px]">
+              <div class="rounded-full bg-gray-200 p-2 cursor-pointer">
+                <img
+                  src="{% static 'public/assets/images/chat.png' %}"
+                  width="25"
+                  height="25"
+                  alt=""
+                />
+              </div>
+              <span class="text-xs text-gray-800 font-semibold"
+                >35 comments</span
+              >
+            </button>
+          </a>
+ 
+            <button class="text-center">
+              <div class="rounded-full bg-gray-200 p-2 cursor-pointer">
+                {% if post in user.profile.favorites.all %}
+                <a href="{% url 'post_unsave' post.id %}">
+                      <img src="{% static 'public/assets/images/save.png' %}" width="25" alt="" />
+                  </a>
+                {% else %}
+                    <a href="{% url 'post_save' post.id %}">
+                        <img src="{% static 'public/assets/images/save-black.png' %}" width="25" alt="" />
+                    </a>
+                {% endif %}
+               
+              </div>
+              <span class="text-xs text-gray-800 font-semibold"
+                >{{ post.num_saves }} saves</span
+              >
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+ 
+    <!-- vidio contaner -->
+  </div>
+  {% endfor %}
+  {% else %}
+    <h1>No Posts </h1>
+  {% endif %}
+
+
+
+</div>
+{% endblock  %}

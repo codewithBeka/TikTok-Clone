@@ -1,0 +1,40 @@
+
+*,
+::before,
+::after {
+  box-sizing: border-box;
+}
+
+
+.logo{
+  width: 10px;
+}
+.profile-down{
+  display: none;
+}
+.show{
+  display: block;
+}
+::-webkit-scrollbar{
+  display: none;
+
+}
+.remove{
+  display: none;
+}
+.profile{
+  margin-left: 34px;
+}
+
+.upload{
+display: none;
+}
+.upload_show{
+  display: flex;
+}
+
+@media (max-width:1020px){
+   #SideNavMain{
+    width: 80px;
+   }
+}
